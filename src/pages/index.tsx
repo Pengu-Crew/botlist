@@ -1,29 +1,36 @@
 import Image from "next/image"
+import { ChevronUpIcon } from '@sanity/icons'
+import { useSession } from "next-auth/react"
 
 const data = [
   {
     name: 'Cuchus',
     description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit, parturient dis venenatis semper condimentum augue, velit mattis senectus nam per ridiculus.',
     imageURL: 'https://cdn.discordapp.com/avatars/892993411169267722/6761200c74904f94f97305dbd1e437e4.png',
-    tags: ['Fun', 'Util']
+    tags: ['Fun', 'Util'],
+    votes: 6
   },
   {
     name: 'BotListBot',
     description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit, parturient dis venenatis semper condimentum augue, velit mattis senectus nam per ridiculus.',
     imageURL: 'https://cdn.discordapp.com/avatars/959109912913387583/0c85634de322060f82d2eb20888ecbf6.png',
-    tags: ['Fun', 'Images']
+    tags: ['Fun', 'Images'],
+    votes: 3
   }
 ]
 
 export default function Home() {
+  const { data: session } = useSession()
+
   return (
     <div>
-      <div className="text-center pt-52">
-        <h1 className="text-LightGray text-7xl font-extrabold p-5">Pengu BotList</h1>
-        <p className="text-CadetGray text-xl font-medium">It's an incredible list of discord bots.</p>
+      <div className="text-center pt-24">
 
-        <div className="flex justify-center p-10">
-          <input className="appearance-none block w-3/4 bg-Charcoal/20 border border-OuterSpace/30 rounded-lg py-3 px-6 leading-tight focus:outline-none focus:bg-Charcoal/30 text-CadetGray placeholder:text-CadetGray" type="text" placeholder="Search among more than 0 bots" />
+        <h1 className="text-LightGray text-7xl font-extrabold p-5">Pengu BotList &#128039;</h1>
+        <p className="text-CadetGray text-xl font-medium">It's an Pengudible list of discord bots.</p>
+        { session?.profile && <p className="text-PaynesGray/90 text-base font-medium pt-5">Welcome {session.profile.username}!</p> }
+        <div className={`flex justify-center p-${session ? '5' : '10'}`}>
+          <input className="appearance-none block w-3/4 bg-Charcoal/20 border border-OuterSpace/30 rounded-lg py-3 px-6 leading-tight focus:outline-none focus:bg-Charcoal/30 text-CadetGray placeholder:text-CadetGray/80" type="text" placeholder="Search among more than 0 bots" />
         </div>
       </div>
 
@@ -40,7 +47,14 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="flex justify-between py-2">
-                          <p className="text-CadetGray text-xl font-bold">{data.name}</p>
+                          <div className="flex">
+                            <p className="text-CadetGray text-xl font-bold">{data.name}</p>
+
+                            <ChevronUpIcon className="text-4xl text-PayneGray pl-2" />
+                            <div className="bg-green-CambridgeBlue/10 px-2 py-1 rounded-lg">                     
+                              <p className="text-green-CambridgeBlue font-semibold">{data.votes}</p>
+                            </div>                     
+                          </div>
                           {
                             data.tags?.length && (
                               <div className="flex items-center">
@@ -48,7 +62,7 @@ export default function Home() {
                                 {
                                   data.tags.map((tag) => {
                                     return (
-                                      <div className="bg-CadetGray/10 mr-2 px-2 py-1 rounded-lg">
+                                      <div className="bg-CadetGray/10 mr-2 px-2 py-1 rounded-lg" key={tag}>
                                         <p className="text-CadetGray font-semibold">{tag}</p>
                                       </div>
                                     )

@@ -16,7 +16,13 @@ const config: Config = {
       'CadetGray': '#7D909A',
       'CadetsGray': '#9DB4C0',
       'LightGray': '#C2DFE3',
-      'LightCyan': '#E0FBFC'
+      'LightCyan': '#E0FBFC',
+      green: {
+        'CambridgeBlue':'#9DBF9F'
+      },
+      red: {
+        'Wenge': '#735C5C'
+      }
     },
     extend: {
       backgroundImage: {
