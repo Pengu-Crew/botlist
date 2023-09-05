@@ -2,6 +2,7 @@ import Image from "next/image"
 import { ChevronUpIcon } from '@sanity/icons'
 import { useSession } from "next-auth/react"
 import { BotData } from "@/lib/data/bots"
+import { PENGUIN_EMOJI } from "@/lib/data/emojis"
 
 export default function Home() {
   const { data: session } = useSession()
@@ -10,8 +11,8 @@ export default function Home() {
     <div>
       <div className="text-center pt-24">
 
-        <h1 className="text-LightGray text-7xl font-extrabold p-5">Pengu BotList &#128039;</h1>
-        <p className="text-CadetGray text-xl font-medium">It's an Pengudible list of discord bots.</p>
+        <h1 className="text-LightGray text-7xl font-extrabold p-5">Pengu BotList {PENGUIN_EMOJI}</h1>
+        <p className="text-CadetGray text-xl font-medium">It&apos;s an Pengudible list of discord bots.</p>
         { session?.profile && <p className="text-PaynesGray/90 text-base font-medium pt-5 pb-10">Welcome {session.profile.username}!</p> }
         <div className={`flex justify-center px-5 ${!session && 'pt-10'}`}>
           <input className="appearance-none block w-3/4 bg-Charcoal/20 border border-OuterSpace/30 rounded-lg py-3 px-6 leading-tight focus:outline-none focus:bg-Charcoal/30 text-CadetGray placeholder:text-CadetGray/80" type="text" placeholder="Search among more than 0 bots" />

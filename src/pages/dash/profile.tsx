@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { BotData } from '@/lib/data/bots'
 
-export default function profile() {
+export default function Profile() {
     const { data: session } = useSession()
 
     return (
