@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { BotData } from '@/lib/data/bots'
 
@@ -16,9 +17,11 @@ export default function Profile() {
                                 <h1 className='text-LightGray/70 text-5xl font-extrabold p-5'>{session.profile.username}</h1>
                             </div>
                             <div className='flex items-center'>
-                                <button className='bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 mr-5 block hover:bg-PaynesGray/10'>
-                                    Add a bot
-                                </button>
+                                <Link href='/dash/bots/add'>
+                                    <button className='bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 mr-5 block hover:bg-PaynesGray/10'>
+                                        Add a bot
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                         <div className='bg-Charcoal/10 rounded-lg m-3 p-5'>
