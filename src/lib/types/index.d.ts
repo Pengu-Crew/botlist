@@ -3,6 +3,10 @@ import { DiscordProfile } from 'next-auth/providers/discord'
 
 declare module "next-auth" {
   interface Session {
-    profile: DiscordProfile
+    profile: DiscordUser
   }
 }
+
+export type DiscordUser = {
+  hexAccentColor: string
+} & DiscordProfile

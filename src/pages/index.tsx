@@ -1,23 +1,7 @@
 import Image from "next/image"
 import { ChevronUpIcon } from '@sanity/icons'
 import { useSession } from "next-auth/react"
-
-const data = [
-  {
-    name: 'Cuchus',
-    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit, parturient dis venenatis semper condimentum augue, velit mattis senectus nam per ridiculus.',
-    imageURL: 'https://cdn.discordapp.com/avatars/892993411169267722/6761200c74904f94f97305dbd1e437e4.png',
-    tags: ['Fun', 'Util'],
-    votes: 6
-  },
-  {
-    name: 'BotListBot',
-    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit, parturient dis venenatis semper condimentum augue, velit mattis senectus nam per ridiculus.',
-    imageURL: 'https://cdn.discordapp.com/avatars/959109912913387583/0c85634de322060f82d2eb20888ecbf6.png',
-    tags: ['Fun', 'Images'],
-    votes: 3
-  }
-]
+import { BotData } from "@/lib/data/bots"
 
 export default function Home() {
   const { data: session } = useSession()
@@ -28,8 +12,8 @@ export default function Home() {
 
         <h1 className="text-LightGray text-7xl font-extrabold p-5">Pengu BotList &#128039;</h1>
         <p className="text-CadetGray text-xl font-medium">It's an Pengudible list of discord bots.</p>
-        { session?.profile && <p className="text-PaynesGray/90 text-base font-medium pt-5">Welcome {session.profile.username}!</p> }
-        <div className={`flex justify-center p-${session ? '5' : '10'}`}>
+        { session?.profile && <p className="text-PaynesGray/90 text-base font-medium pt-5 pb-10">Welcome {session.profile.username}!</p> }
+        <div className={`flex justify-center px-5 ${!session && 'pt-10'}`}>
           <input className="appearance-none block w-3/4 bg-Charcoal/20 border border-OuterSpace/30 rounded-lg py-3 px-6 leading-tight focus:outline-none focus:bg-Charcoal/30 text-CadetGray placeholder:text-CadetGray/80" type="text" placeholder="Search among more than 0 bots" />
         </div>
       </div>
@@ -39,7 +23,7 @@ export default function Home() {
           <h3 className="text-PaynesGray text-4xl pl-10 font-bold">Some of the best bots</h3>
           <div>
               {
-                data.map((data) => {
+                BotData.map((data) => {
                   return (
                     <div className="flex justify-start m-10 p-3 bg-OuterSpace/10 rounded-lg" key={data.name}>
                       <div className="pl-3 pr-10">

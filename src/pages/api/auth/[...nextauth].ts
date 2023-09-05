@@ -1,5 +1,4 @@
-import { Session } from 'next-auth'
-import { JWT } from 'next-auth/jwt'
+import { DiscordUser } from '@/lib/types';
 import NextAuth from 'next-auth/next'
 import DiscordProvider, { DiscordProfile } from 'next-auth/providers/discord'
 
@@ -14,8 +13,8 @@ export default NextAuth({
     
             return token
         },
-        session({ session, token }: { session: Session, token: JWT}) {
-            session.profile = token?.profile as DiscordProfile
+        session({ session, token }) {
+            session.profile = token?.profile as DiscordUser
             return session
         }
     },
@@ -24,8 +23,10 @@ export default NextAuth({
             clientId: process.env.DISCORD_CLIENT_ID as string,
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
             profile(profile: DiscordProfile) {
-                if (!profile.avatar) profile.avatar = `https://cdn.discordapp.com/embed/avatars/${parseInt(profile.discriminator) % 5}.png`;
-                else profile.avatar = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${profile.avatar.startsWith('a_') ? 'gif' : 'png'}`
+                if (profile.avatar) profile.avatar = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${profile.avatar.startsWith('a_') ? 'gif' : 'png'}`
+                else profile.avatar = `https://cdn.discordapp.com/embed/avatars/${parseInt(profile.discriminator) % 5}.png`;
+
+                if (profile.accent_color) profile.hexAccentColor = `#${profile.accent_color.toString(16)}`
 
                 return profile
             }
@@ -33,3 +34,4 @@ export default NextAuth({
     ],
     secret: process.env.SECRET
 })
+
