@@ -186,13 +186,3 @@ type InputLabels = {
     maxLength?: number
     style?: string
 }
-
-type ErrorLabels = {
-    id: string
-    errors: ExtendErrors[]
-}
-
-type ExtendErrors = {
-    text: string,
-    id: number
-}
