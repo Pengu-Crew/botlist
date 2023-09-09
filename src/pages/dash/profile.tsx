@@ -7,10 +7,10 @@ export default function Profile() {
     const { data: session } = useSession()
 
     return (
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
             {
                 session && (
-                    <div className="bg-Charcoal/10 w-11/12 p-5 m-5 rounded-lg">
+                    <div className='bg-Charcoal/10 w-11/12 p-5 m-5 rounded-lg'>
                         <div className={`flex justify-between bg-[${session.profile.hexAccentColor}]/10 rounded-lg m-3 mb-8`}>
                             <div className='flex p-5'>
                                 <Image className='rounded-lg' src={session.profile.avatar} width={100} height={100} alt={session.profile.username} />
@@ -30,13 +30,13 @@ export default function Profile() {
                                 {
                                     BotData.map((data) => {
                                         return (
-                                            <div className="flex justify-start m-10 p-3 bg-Charcoal/10 rounded-lg" key={data.name}>
-                                                <div className="pl-3 pr-10">
-                                                    <Image className="rounded-lg min-w-[75px]" src={data.imageURL} alt={data.name} width={75} height={75} />
+                                            <div className='flex justify-start m-10 p-3 bg-Charcoal/10 rounded-lg' key={data.name}>
+                                                <div className='pl-3 pr-10'>
+                                                    <Image className='rounded-lg min-w-[75px]' src={data.imageURL} alt={data.name} width={75} height={75} />
                                                 </div>
-                                                <div className="py-2">
-                                                    <p className="text-CadetGray text-xl font-bold">{data.name}</p>
-                                                    <p className="text-PaynesGray font-semibold ">{data.description}</p>
+                                                <div className='py-2'>
+                                                    <p className='text-CadetGray text-xl font-bold'>{data.name}</p>
+                                                    <p className='text-PaynesGray font-semibold '>{data.description}</p>
                                                 </div>
                                                 <div className='flex items-center'>
                                                     <button className='bg-red-Wenge/20 rounded-lg text-left text-red-Wenge font-semibold px-4 py-2 mr-5 block hover:bg-red-Wenge/10'>
