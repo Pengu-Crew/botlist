@@ -1,11 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { BotData } from '@/lib/data/bots'
+import { Bot } from '@/lib/types'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 export default function Profile() {
+    const [bots, setBots] = useState<Bot[]>()
     const { data: session } = useSession()
-
+    
+    useEffect(() => {
+      axios.get('/api/dash/db/bots').then(({ data }) => setBots(data.message))
+    }, [])
+    
     return (
         <div className='flex justify-center'>
             {
@@ -28,15 +35,17 @@ export default function Profile() {
                             <p className='text-PaynesGray text-4xl pl-10 font-bold'>Your bots</p>
                             <div>
                                 {
-                                    BotData.map((data) => {
+                                    bots?.length && bots.map((data) => {
                                         return (
-                                            <div className='flex justify-start m-10 p-3 bg-Charcoal/10 rounded-lg' key={data.name}>
-                                                <div className='pl-3 pr-10'>
-                                                    <Image className='rounded-lg min-w-[75px]' src={data.imageURL} alt={data.name} width={75} height={75} />
-                                                </div>
-                                                <div className='py-2'>
-                                                    <p className='text-CadetGray text-xl font-bold'>{data.name}</p>
-                                                    <p className='text-PaynesGray font-semibold '>{data.description}</p>
+                                            <div className='flex justify-between m-10 p-3 bg-Charcoal/10 rounded-lg' key={data.username}>
+                                                <div className='flex'>
+                                                    <div className='pl-3 pr-10'>
+                                                        <Image className='rounded-lg min-w-[75px]' src={data.avatar} alt={data.username} width={75} height={75} />
+                                                    </div>
+                                                    <div className='py-2'>
+                                                        <p className='text-CadetGray text-xl font-bold'>{data.username}</p>
+                                                        <p className='text-PaynesGray font-semibold '>{data.config.shortDescription}</p>
+                                                    </div>
                                                 </div>
                                                 <div className='flex items-center'>
                                                     <button className='bg-red-Wenge/20 rounded-lg text-left text-red-Wenge font-semibold px-4 py-2 mr-5 block hover:bg-red-Wenge/10'>

@@ -1,11 +1,22 @@
 import Image from 'next/image'
 import { ChevronUpIcon } from '@sanity/icons'
 import { useSession } from 'next-auth/react'
-import { BotData } from '@/lib/data/bots'
+//import { BotData } from '@/lib/data/bots'
 import { PENGUIN_EMOJI } from '@/lib/data/emojis'
+import { Bot } from '@/lib/types'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 export default function Home() {
+  const [bots, setBots] = useState<Bot[]>()
   const { data: session } = useSession()
+  
+  useEffect(() => {
+    axios.get('/api/dash/db/bots').then(({ data }) => {
+      console.log(data)
+      setBots(data.message)
+    })
+  }, [])
 
   return (
     <div>
@@ -24,20 +35,19 @@ export default function Home() {
           <h3 className='text-PaynesGray text-4xl pl-10 font-bold'>Some of the best bots</h3>
           <div>
               {
-                BotData.map((data) => {
+                bots?.length && bots.map((data) => {
                   return (
-                    <div className='flex justify-start m-10 p-3 bg-OuterSpace/10 rounded-lg' key={data.name}>
+                    <div className='flex justify-start m-10 p-3 bg-OuterSpace/10 rounded-lg' key={data.username}>
                       <div className='pl-3 pr-10'>
-                        <Image className='rounded-lg min-w-[75px]' src={data.imageURL} alt={data.name} width={75} height={75} />
+                        <Image className='rounded-lg min-w-[75px]' src={data.avatar} alt={data.username} width={75} height={75} />
                       </div>
                       <div>
                         <div className='flex justify-between py-2'>
                           <div className='flex'>
-                            <p className='text-CadetGray text-xl font-bold'>{data.name}</p>
-
+                            <p className='text-CadetGray text-xl font-bold'>{data.username}</p>
                             <ChevronUpIcon className='text-4xl text-PayneGray pl-2' />
                             <div className='bg-green-CambridgeBlue/10 px-2 py-1 rounded-lg'>                     
-                              <p className='text-green-CambridgeBlue font-semibold'>{data.votes}</p>
+                              <p className='text-green-CambridgeBlue font-semibold'>0</p>
                             </div>                     
                           </div>
                           {
@@ -57,7 +67,7 @@ export default function Home() {
                             )
                           }
                         </div>                 
-                        <p className='text-PaynesGray font-semibold '>{data.description}</p>
+                        <p className='text-PaynesGray font-semibold'>{data.config.shortDescription}</p>
                       </div>
 
                     </div>

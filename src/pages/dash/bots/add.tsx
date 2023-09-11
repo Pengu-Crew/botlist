@@ -1,22 +1,11 @@
 import { PENGUIN_EMOJI } from '@/lib/data/emojis'
-import { DiscordUser } from '@/lib/types'
+import { Bot, DiscordUser } from '@/lib/types'
 import { DISCORD_ID_REGEX } from '@/lib/utils/constants'
 import axios from 'axios'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useState } from 'react'
-
-const basicInputLabels: InputLabels[] = [
-    {
-        name: 'ID',
-        topic: 'Type your bot id',
-        type: 'text',
-        required: true,
-        id: 'id',
-        maxLength: 19,
-        minLength: 17
-    }
-]
+import { useForm } from 'react-hook-form'
 
 const detailsInputLabels: InputLabels[] = [
     {
@@ -24,28 +13,63 @@ const detailsInputLabels: InputLabels[] = [
         topic: 'Write a brief description (maximum 124 characters)',
         type: 'textarea',
         required: true,
-        id: 'short-description',
+        id: 'shortDescription',
         maxLength: 128,
         minLength: 20,
-        style: 'min-w-[70%] h-24'
+        style: 'min-w-full h-24'
     },
     {
         name: 'Long description',
         topic: 'Write a more detailed description of your bot (maximum 512 characters)',
         type: 'textarea',
         required: true,
-        id: 'long-description',
+        id: 'longDescription',
         maxLength: 512,
         minLength: 264,
-        style: 'min-w-[75%] h-64'
+        style: 'min-w-full h-64'
+    },
+    {
+        name: 'prefix',
+        topic: 'The prefix of your bot',
+        type: 'text',
+        required: true,
+        id: 'prefix',
+        maxLength: 7,
+        minLength: 1
+    }
+]
+
+const linksInputLabels: InputLabels[] = [
+    {
+        name: 'Discord server',
+        topic: 'Link to support server',
+        id: 'linkDiscordServer',
+        type: 'text',
+        required: false
+    },
+    {
+        name: 'Bot website',
+        topic: 'Link to the bot\'s website',
+        id: 'linkWebSite',
+        type: 'text',
+        required: false
+    },
+    {
+        name: 'Github',
+        topic: 'Link to the bot github repository',
+        id: 'linkTwitter',
+        type: 'text',
+        required: false
     }
 ]
 
 export default function AddBot() {
     const [searchButton, setSearchButton] = useState<{ clicked?: boolean, error?: string }>()
+    const [saveButton, setSaveButton] = useState<string>()
     const [id, setId] = useState<string>()
     const [bot, setBot] = useState<DiscordUser>()
     const { data: session } = useSession()
+    const { handleSubmit, register, formState: { errors }, } = useForm()
 
     function handle(data: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         if (data.target.id === 'id') {
@@ -59,15 +83,15 @@ export default function AddBot() {
 
         setSearchButton({ clicked: true })
 
-        axios.get(`/api/dash/bots/getInfo?id=${id}`).then(({ data }) => {
+        axios.get(`/api/dash/bot?id=${id}`).then(({ data }) => {
             setSearchButton({ clicked: false })
             if (data.message.id) {
                 setId(undefined)
                 return setBot(data.message)
             }
             return 
-        }).catch(() => {
-            setSearchButton({ clicked: false, error: 'The bot was not found, verify that the id is correct.' })
+        }).catch(({ response }) => {
+            setSearchButton({ clicked: false, error: response.data.message ?? 'The bot was not found, verify that the id is correct.' })
 
             setTimeout(() => {
                 setSearchButton({ error: undefined })
@@ -76,40 +100,65 @@ export default function AddBot() {
             setId(undefined)
         })
     }
+    const onSubmit = handleSubmit((formData) => {
+        setSaveButton('The information is being saved...')
+
+        const data: Bot = { 
+            id: bot?.id as string,
+            username: bot?.username as string,
+            avatar: bot?.avatar as string,
+            ownerID: session?.profile.id as string,
+            config: {
+                longDescription: formData.longDescription as string,
+                shortDescription: formData.shortDescription as string,
+                prefix: formData.prefix as string,
+                links: {
+                    linkDiscordServer: formData.linkDiscordServer,
+                    linkWebSite: formData.linkWebSite,
+                    linkGithub: formData.linkGithub
+                }
+            },
+            votes: 0
+        }
+
+        axios.post('/api/dash/bot', { data }).then(({ data }) => setSaveButton(data.message ?? 'The information was saved correctly!'))
+    })
     
     function labels(input: InputLabels[]) {
-        return input.map((label, index) => {
+        return input.map((label) => {
             const style = `${label.style} bg-Charcoal/10 rounded-lg text-CadetGray border-Charcoal/30 leading-tight focus:outline-none focus:bg-Charcoal/30 placeholder:text-CadetGray/80 placeholder:pl-1 mx-3 p-2`
-
+            const registers = {...register(label.id, { required: { value: label.required, message: 'This field is required' }, maxLength: { value: label.maxLength ?? 999, message: `The text must have a maximum of ${label.maxLength} characters` }, minLength: { value: label.minLength ?? 0, message: `The text must be at least ${label.minLength} characters long`} })}
             return (
-                <div className='flex items-center p-5' key={index}>
+                <div className='flex justify-between items-center px-5 py-3' key={label.id}>
                     <label htmlFor={label.id} className='text-CadetGray text-lg font-bold pl-5 pr-3'>
                         {label.name}:
                     </label>
+                    <div className='min-w-[70%]'>
                     {
                         label.type === 'textarea' ?
-                            <textarea
-                                id={label.id}
-                                name={label.id}
-                                placeholder={label.topic}
-                                minLength={label.minLength}
-                                maxLength={label.maxLength}
-                                onChange={handle}
-                                className={`${style} resize-none`}
-                            />
-                        : 
+                        <textarea
+                            id={label.id}
+                            placeholder={label.topic}
+                            minLength={label.minLength}
+                            maxLength={label.maxLength}
+                            className={`${style} resize-none`}
+                            {...registers}
+                        />
+                            :
                             <input
-                                type={label.type}
-                                id={label.id}
-                                name={label.id}
-                                placeholder={label.topic}
-                                minLength={label.minLength}
-                                maxLength={label.maxLength}
-                                onChange={handle}
-                                className={style}
+                            type={label.type}
+                            id={label.id}
+                            placeholder={label.topic}
+                            minLength={label.minLength}
+                            maxLength={label.maxLength}
+                            className={style}
+                            {...registers}                                   
                             />
+                        }
+                    {
+                        errors[label.id] && <p className='text-red-Wenge text-sm pt-1 px-3'>{errors[label.id]?.message as string}</p>
                     }
-    
+                    </div>
                 </div>
             )
         })
@@ -136,13 +185,31 @@ export default function AddBot() {
                                     </div>
                                 }
                                 <p className='text-CadetGray text-3xl font-bold pl-5'>Basic data</p>
-                                { labels(basicInputLabels) }
+                                <div className='flex items-center p-5' key="id">
+                                    <label htmlFor="id" className='text-CadetGray text-lg font-bold pl-5 pr-3'>
+                                        ID:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="id"
+                                        name="id"
+                                        placeholder="Type your bot id"
+                                        minLength={17}
+                                        maxLength={19}
+                                        onChange={handle}
+                                        className='bg-Charcoal/10 rounded-lg text-CadetGray border-Charcoal/30 leading-tight focus:outline-none focus:bg-Charcoal/30 placeholder:text-CadetGray/80 placeholder:pl-1 mx-3 p-2'                             
+                                    />
+                                </div>
                                 {
                                     bot && 
                                     <div>
                                         <p className='text-CadetGray text-3xl font-bold pl-5'>Details</p>
                                         <div className='grid grid-cols-2'>
-                                            { labels(detailsInputLabels) }
+                                            { labels(detailsInputLabels) }                                        
+                                        </div>
+                                        <div className='max-w-[50%] p-5'>
+                                            <p className='text-CadetGray text-2xl font-bold'>Links</p>
+                                            { labels(linksInputLabels) }
                                         </div>
                                     </div>
                                 }                 
@@ -158,7 +225,7 @@ export default function AddBot() {
                                     }
                                     Search bot
                                 </button>
-                                <button className='bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 block hover:bg-PaynesGray/10 cursor-not-allowed'>
+                                <button className={`bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 block hover:bg-PaynesGray/10 ${!bot && 'cursor-not-allowed'}`} onClick={onSubmit}>
                                     Save
                                 </button>
                             </div>
@@ -166,6 +233,12 @@ export default function AddBot() {
                                 searchButton?.error &&
                                 <div className='flex justify-end pt-1'>
                                     <p className='text-red-Wenge text-sm'>{searchButton.error}</p>
+                                </div>
+                            }
+                            {
+                                saveButton &&
+                                <div className='flex justify-end pt-1'>
+                                     <p className='text-green-CambridgeBlue/80 text-sm'>{saveButton}</p>
                                 </div>
                             }
                         </div>

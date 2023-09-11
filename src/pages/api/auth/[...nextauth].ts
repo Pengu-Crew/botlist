@@ -1,4 +1,5 @@
 import { DiscordUser } from '@/lib/types';
+import { getAvatar } from '@/lib/utils/discord';
 import NextAuth from 'next-auth/next'
 import DiscordProvider, { DiscordProfile } from 'next-auth/providers/discord'
 
@@ -23,8 +24,7 @@ export default NextAuth({
             clientId: process.env.DISCORD_CLIENT_ID as string,
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
             profile(profile: DiscordProfile) {
-                if (profile.avatar) profile.avatar = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${profile.avatar.startsWith('a_') ? 'gif' : 'png'}`
-                else profile.avatar = `https://cdn.discordapp.com/embed/avatars/${parseInt(profile.discriminator) % 5}.png`;
+                profile.avatar = getAvatar({ id: profile.id, discriminator: profile.discriminator, avatar: profile.avatar })
 
                 if (profile.accent_color) profile.hexAccentColor = `#${profile.accent_color.toString(16)}`
 

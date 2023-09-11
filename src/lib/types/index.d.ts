@@ -10,3 +10,22 @@ declare module 'next-auth' {
 export type DiscordUser = {
   hexAccentColor: string
 } & DiscordProfile
+
+export interface Bot {
+  id: string
+  username: string
+  avatar: string
+  ownerID: string
+  config: {
+    longDescription: string
+    shortDescription: string
+    prefix: string
+    links: {
+      linkDiscordServer?: string
+      linkWebSite?: string
+      linkGithub?: string
+    }
+  }
+  tags?: string[]
+  votes: number
+}
