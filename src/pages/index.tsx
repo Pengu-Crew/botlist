@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { ChevronUpIcon } from '@sanity/icons'
+import Link from 'next/link'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { useSession } from 'next-auth/react'
-//import { BotData } from '@/lib/data/bots'
 import { PENGUIN_EMOJI } from '@/lib/data/emojis'
 import { Bot } from '@/lib/types'
 import { useEffect, useState } from 'react'
@@ -12,10 +12,7 @@ export default function Home() {
   const { data: session } = useSession()
   
   useEffect(() => {
-    axios.get('/api/dash/db/bots').then(({ data }) => {
-      console.log(data)
-      setBots(data.message)
-    })
+    axios.get('/api/dash/db/bots').then(({ data }) => setBots(data.message))
   }, [])
 
   return (
@@ -37,40 +34,42 @@ export default function Home() {
               {
                 bots?.length && bots.map((data) => {
                   return (
-                    <div className='flex justify-start m-10 p-3 bg-OuterSpace/10 rounded-lg' key={data.username}>
-                      <div className='pl-3 pr-10'>
-                        <Image className='rounded-lg min-w-[75px]' src={data.avatar} alt={data.username} width={75} height={75} />
+                    <Link href={`/bots/${data.id}`} >
+                      <div className='flex justify-start m-10 p-3 bg-OuterSpace/10 rounded-lg' key={data.username}>
+                        <div className='pl-3 pr-10'>
+                          <Image className='rounded-lg min-w-[75px]' src={data.avatar} alt={data.username} width={75} height={75} />
+                        </div>
+                        <div>
+                          <div className='flex justify-between py-2'>
+                            <div className='flex'>
+                              <p className='text-CadetGray text-xl font-bold'>{data.username}</p>
+                              <ArrowDropUpIcon className=' text-PayneGray pl-2' fontSize='large' />
+                              <div className='bg-green-CambridgeBlue/10 px-2 py-1 rounded-lg'>                     
+                                <p className='text-green-CambridgeBlue font-semibold'>0</p>
+                              </div>                     
+                            </div>
+                            {
+                              data.tags?.length && (
+                                <div className='flex items-center'>
+                                  <p className='text-PayneGray text-xl pr-3'>#</p>
+                                  {
+                                    data.tags.map((tag) => {
+                                      return (
+                                        <div className='bg-CadetGray/10 mr-2 px-2 py-1 rounded-lg' key={tag}>
+                                          <p className='text-CadetGray font-semibold'>{tag}</p>
+                                        </div>
+                                      )
+                                    })
+                                  }
+                                </div>
+                              )
+                            }
+                          </div>                 
+                          <p className='text-PaynesGray font-semibold'>{data.config.shortDescription}</p>
+                        </div>
                       </div>
-                      <div>
-                        <div className='flex justify-between py-2'>
-                          <div className='flex'>
-                            <p className='text-CadetGray text-xl font-bold'>{data.username}</p>
-                            <ChevronUpIcon className='text-4xl text-PayneGray pl-2' />
-                            <div className='bg-green-CambridgeBlue/10 px-2 py-1 rounded-lg'>                     
-                              <p className='text-green-CambridgeBlue font-semibold'>0</p>
-                            </div>                     
-                          </div>
-                          {
-                            data.tags?.length && (
-                              <div className='flex items-center'>
-                                <p className='text-PayneGray text-xl pr-3'>#</p>
-                                {
-                                  data.tags.map((tag) => {
-                                    return (
-                                      <div className='bg-CadetGray/10 mr-2 px-2 py-1 rounded-lg' key={tag}>
-                                        <p className='text-CadetGray font-semibold'>{tag}</p>
-                                      </div>
-                                    )
-                                  })
-                                }
-                              </div>
-                            )
-                          }
-                        </div>                 
-                        <p className='text-PaynesGray font-semibold'>{data.config.shortDescription}</p>
-                      </div>
+                    </Link>
 
-                    </div>
                   )
                 })
               }

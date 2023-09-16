@@ -57,7 +57,7 @@ const linksInputLabels: InputLabels[] = [
     {
         name: 'Github',
         topic: 'Link to the bot github repository',
-        id: 'linkTwitter',
+        id: 'linkGithub',
         type: 'text',
         required: false
     }
@@ -69,7 +69,7 @@ export default function AddBot() {
     const [id, setId] = useState<string>()
     const [bot, setBot] = useState<DiscordUser>()
     const { data: session } = useSession()
-    const { handleSubmit, register, formState: { errors }, } = useForm()
+    const { handleSubmit, register, formState: { errors } } = useForm()
 
     function handle(data: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         if (data.target.id === 'id') {
@@ -108,6 +108,7 @@ export default function AddBot() {
             username: bot?.username as string,
             avatar: bot?.avatar as string,
             ownerID: session?.profile.id as string,
+            discriminator: bot?.discriminator ?? '0000',
             config: {
                 longDescription: formData.longDescription as string,
                 shortDescription: formData.shortDescription as string,
@@ -168,7 +169,7 @@ export default function AddBot() {
             {
                 session && (
                     <div className='w-11/12 p-5 m-5 rounded-lg'>
-                        <div className='bg-Charcoal/10 rounded-lg m-3 p-5 '>
+                        <div className='bg-Charcoal/10 rounded-lg m-3 p-5'>
                             <h1 className='text-LightGray/70 text-5xl font-extrabold p-5'>Add a new bot! {PENGUIN_EMOJI}</h1>
                             <div className='bg-Charcoal/10 rounded-lg m-3 mb-10 p-5'>
                                 {
@@ -176,11 +177,11 @@ export default function AddBot() {
                                     <div className='bg-Charcoal/10 rounded-lg flex items-center p-5 m-10 mt-3'>
                                         <Image className='rounded-lg ml-5' src={bot.avatar} alt={bot.username} width={75} height={75} />
                                         <div className='text-center p-5'>
-                                            <p className='text-CadetGray text-3xl font-bold'>{bot.username}#{bot.discriminator}</p>
+                                            <p className='text-CadetGray text-3xl font-bold'>{bot.username}</p>
                                             <p className='text-CadetGray/75 text-base font-semibold'>({bot.id})</p>
                                         </div>                               
-                                        <div className='bg-LightCyan/10 rounded-lg p-2 ml-2'>
-                                            <p className='text-CadetsGray text-lg font-semibold'>Bot</p>
+                                        <div className='bg-LightCyan/10 rounded-lg p-2'>
+                                            <p className='text-CadetsGray text-base font-semibold'>Bot</p>
                                         </div>                                     
                                     </div>
                                 }

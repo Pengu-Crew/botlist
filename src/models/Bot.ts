@@ -10,6 +10,10 @@ const BotSchema: Schema = new Schema<Bot>({
         type: String,
         required: true
     },
+    discriminator: {
+        type: String,
+        required: true
+    },
     avatar: {
         type: String,
         required: true

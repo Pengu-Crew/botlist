@@ -10,7 +10,7 @@ export default function Profile() {
     const { data: session } = useSession()
     
     useEffect(() => {
-      axios.get('/api/dash/db/bots').then(({ data }) => setBots(data.message))
+      axios.get('/api/dash/db/user/bots').then(({ data }) => setBots(data.message))
     }, [])
     
     return (

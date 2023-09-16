@@ -11,11 +11,16 @@ export type DiscordUser = {
   hexAccentColor: string
 } & DiscordProfile
 
+export type BotAndOwner = {
+  owner: DiscordProfile
+} & Bot
+
 export interface Bot {
   id: string
   username: string
   avatar: string
   ownerID: string
+  discriminator: string
   config: {
     longDescription: string
     shortDescription: string
