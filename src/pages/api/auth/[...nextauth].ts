@@ -27,11 +27,10 @@ export default NextAuth({
                 profile.avatar = getAvatar({ id: profile.id, discriminator: profile.discriminator, avatar: profile.avatar })
 
                 if (profile.accent_color) profile.hexAccentColor = `#${profile.accent_color.toString(16)}`
-
                 return profile
             }
         })
     ],
-    secret: process.env.SECRET
+    secret: process.env.NEXTAUTH_SECRET
 })
 

@@ -1,8 +1,9 @@
-import { getAvatar } from "@/lib/utils/discord";
-import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
-import { DiscordProfile } from "next-auth/providers/discord";
-export default async function Bot(
+import { getAvatar } from '@/lib/utils/discord';
+import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { DiscordProfile } from 'next-auth/providers/discord';
+
+export default async function User(
     req: NextApiRequest,
     res: NextApiResponse
 ) {

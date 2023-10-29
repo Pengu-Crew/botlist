@@ -1,6 +1,6 @@
-import { connectToDB } from "@/lib/utils/db";
-import BotModel from "@/models/Bot";
-import { NextApiRequest, NextApiResponse } from "next";
+import { connectToDB } from '@/lib/utils/db';
+import BotModel from '@/models/Bot';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function Bots(
     _req: NextApiRequest,

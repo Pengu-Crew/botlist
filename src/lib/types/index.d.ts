@@ -9,6 +9,7 @@ declare module 'next-auth' {
 
 export type DiscordUser = {
   hexAccentColor: string
+  global_name?: string
 } & DiscordProfile
 
 export type BotAndOwner = {
@@ -29,6 +30,7 @@ export interface Bot {
       linkDiscordServer?: string
       linkWebSite?: string
       linkGithub?: string
+      invite: string
     }
   }
   tags?: string[]

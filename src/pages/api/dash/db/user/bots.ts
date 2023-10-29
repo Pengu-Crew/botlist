@@ -1,7 +1,7 @@
-import { connectToDB } from "@/lib/utils/db";
-import BotModel from "@/models/Bot";
-import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { connectToDB } from '@/lib/utils/db';
+import BotModel from '@/models/Bot';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 
 export default async function UserBots(
     req: NextApiRequest,

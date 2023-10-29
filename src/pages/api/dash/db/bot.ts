@@ -1,12 +1,12 @@
-import { getAvatar } from "@/lib/utils/discord";
-import axios from "axios";
-import { connectToDB } from "@/lib/utils/db";
-import BotModel from "@/models/Bot";
-import { NextApiRequest, NextApiResponse } from "next";
-import { DiscordProfile } from "next-auth/providers/discord";
-import { BotAndOwner } from "@/lib/types";
+import { getAvatar } from '@/lib/utils/discord';
+import axios from 'axios';
+import { connectToDB } from '@/lib/utils/db';
+import BotModel from '@/models/Bot';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { DiscordProfile } from 'next-auth/providers/discord';
+import { BotAndOwner } from '@/lib/types';
 
-export default async function Bot(
+export default async function BotDiscord(
     req: NextApiRequest,
     res: NextApiResponse
 ) {

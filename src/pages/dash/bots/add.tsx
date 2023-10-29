@@ -60,6 +60,17 @@ const linksInputLabels: InputLabels[] = [
         id: 'linkGithub',
         type: 'text',
         required: false
+    },
+    {
+        name: 'Custom invite',
+        topic: 'Bot invitation link',
+        id: 'customInvite',
+        type: 'text',
+        pattern: {
+            regexp: /^https:\/\/discord\.com\/api\/oauth2\/authorize\?client_id=\d+&scope=(bot\+applications\.commands|applications\.commands\+bot|bot)?(&permissions=\d+)?$/, //+applications.commands
+            message: 'The link must be a discord invitation.'
+        },
+        required: false
     }
 ]
 
@@ -102,6 +113,14 @@ export default function AddBot() {
     }
     const onSubmit = handleSubmit((formData) => {
         setSaveButton('The information is being saved...')
+        
+        let invite: string = `https://discord.com/api/oauth2/authorize?client_id=${bot?.id}&scope=bot`
+        if (formData.customInvite) {
+            const match = formData.customInvite.match(/client_id=(\d+)/)
+            if (match && match[1]) {
+                if (match[1] === bot?.id) invite = formData.customInvite
+            }
+        }
 
         const data: Bot = { 
             id: bot?.id as string,
@@ -116,7 +135,8 @@ export default function AddBot() {
                 links: {
                     linkDiscordServer: formData.linkDiscordServer,
                     linkWebSite: formData.linkWebSite,
-                    linkGithub: formData.linkGithub
+                    linkGithub: formData.linkGithub,
+                    invite
                 }
             },
             votes: 0
@@ -127,11 +147,12 @@ export default function AddBot() {
     
     function labels(input: InputLabels[]) {
         return input.map((label) => {
-            const style = `${label.style} bg-Charcoal/10 rounded-lg text-CadetGray border-Charcoal/30 leading-tight focus:outline-none focus:bg-Charcoal/30 placeholder:text-CadetGray/80 placeholder:pl-1 mx-3 p-2`
-            const registers = {...register(label.id, { required: { value: label.required, message: 'This field is required' }, maxLength: { value: label.maxLength ?? 999, message: `The text must have a maximum of ${label.maxLength} characters` }, minLength: { value: label.minLength ?? 0, message: `The text must be at least ${label.minLength} characters long`} })}
+            const style = `${label.style} bg-surface2/10 rounded-lg text-subtext0 border-surface2/30 leading-tight focus:outline-none focus:bg-Charcoal/30 placeholder:text-CadetGray/80 placeholder:pl-1 mx-3 p-2`
+            const registers = {...register(label.id, { pattern: label.pattern ? { value: label.pattern.regexp, message: label.pattern.message } : undefined, required: { value: label.required, message: 'This field is required' }, maxLength: { value: label.maxLength ?? 999, message: `The text must have a maximum of ${label.maxLength} characters` }, minLength: { value: label.minLength ?? 0, message: `The text must be at least ${label.minLength} characters long`} })}
+            
             return (
                 <div className='flex justify-between items-center px-5 py-3' key={label.id}>
-                    <label htmlFor={label.id} className='text-CadetGray text-lg font-bold pl-5 pr-3'>
+                    <label htmlFor={label.id} className='text-subtext0 text-lg font-bold pl-5 pr-3'>
                         {label.name}:
                     </label>
                     <div className='min-w-[70%]'>
@@ -157,7 +178,7 @@ export default function AddBot() {
                             />
                         }
                     {
-                        errors[label.id] && <p className='text-red-Wenge text-sm pt-1 px-3'>{errors[label.id]?.message as string}</p>
+                        errors[label.id] && <p className='text-red/75 text-sm pt-1 px-3'>{errors[label.id]?.message as string}</p>
                     }
                     </div>
                 </div>
@@ -169,54 +190,54 @@ export default function AddBot() {
             {
                 session && (
                     <div className='w-11/12 p-5 m-5 rounded-lg'>
-                        <div className='bg-Charcoal/10 rounded-lg m-3 p-5'>
-                            <h1 className='text-LightGray/70 text-5xl font-extrabold p-5'>Add a new bot! {PENGUIN_EMOJI}</h1>
-                            <div className='bg-Charcoal/10 rounded-lg m-3 mb-10 p-5'>
+                        <div className='bg-surface2/10 rounded-lg m-3 p-5'>
+                            <h1 className='text-subtext0/95 text-5xl font-extrabold p-5'>Add a new bot! {PENGUIN_EMOJI}</h1>
+                            <div className='bg-surface1/10 rounded-lg m-3 mb-10 p-5'>
                                 {
                                     bot && 
-                                    <div className='bg-Charcoal/10 rounded-lg flex items-center p-5 m-10 mt-3'>
+                                    <div className='bg-surface2/5 rounded-lg flex items-center p-5 m-10 mt-3'>
                                         <Image className='rounded-lg ml-5' src={bot.avatar} alt={bot.username} width={75} height={75} />
                                         <div className='text-center p-5'>
-                                            <p className='text-CadetGray text-3xl font-bold'>{bot.username}</p>
-                                            <p className='text-CadetGray/75 text-base font-semibold'>({bot.id})</p>
+                                            <p className='text-subtext0 text-3xl font-bold'>{bot.username}</p>
+                                            <p className='text-subtext0/75 text-base font-semibold'>({bot.id})</p>
                                         </div>                               
-                                        <div className='bg-LightCyan/10 rounded-lg p-2'>
-                                            <p className='text-CadetsGray text-base font-semibold'>Bot</p>
+                                        <div className='bg-surface2/10 rounded-lg p-2'>
+                                            <p className='text-subtext0 text-base font-semibold'>Bot</p>
                                         </div>                                     
                                     </div>
                                 }
-                                <p className='text-CadetGray text-3xl font-bold pl-5'>Basic data</p>
-                                <div className='flex items-center p-5' key="id">
-                                    <label htmlFor="id" className='text-CadetGray text-lg font-bold pl-5 pr-3'>
+                                <p className='text-subtext0 text-3xl font-bold pl-5'>Basic data</p>
+                                <div className='flex items-center p-5' key='id'>
+                                    <label htmlFor='id' className='text-subtext0/75 text-lg font-bold pl-5 pr-3'>
                                         ID:
                                     </label>
                                     <input
-                                        type="text"
-                                        id="id"
-                                        name="id"
-                                        placeholder="Type your bot id"
+                                        type='text'
+                                        id='id'
+                                        name='id'
+                                        placeholder='Type your bot id'
                                         minLength={17}
                                         maxLength={19}
                                         onChange={handle}
-                                        className='bg-Charcoal/10 rounded-lg text-CadetGray border-Charcoal/30 leading-tight focus:outline-none focus:bg-Charcoal/30 placeholder:text-CadetGray/80 placeholder:pl-1 mx-3 p-2'                             
+                                        className='bg-surface2/10 rounded-lg text-subtext0 border-surface2/30 leading-tight focus:outline-none focus:bg-surface2/30 placeholder:text-subtext0/80 placeholder:pl-1 mx-3 p-2'                             
                                     />
                                 </div>
                                 {
                                     bot && 
                                     <div>
-                                        <p className='text-CadetGray text-3xl font-bold pl-5'>Details</p>
+                                        <p className='text-subtext0 text-3xl font-bold pl-5'>Details</p>
                                         <div className='grid grid-cols-2'>
                                             { labels(detailsInputLabels) }                                        
                                         </div>
                                         <div className='max-w-[50%] p-5'>
-                                            <p className='text-CadetGray text-2xl font-bold'>Links</p>
+                                            <p className='text-subtext0 text-2xl font-bold'>Links</p>
                                             { labels(linksInputLabels) }
                                         </div>
                                     </div>
                                 }                 
                             </div>
                             <div className='flex justify-end'>
-                                <button className={`bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 mr-2 block hover:bg-PaynesGray/10 ${!id && 'cursor-not-allowed'}`} onClick={fetchBot}>
+                                <button className={`bg-surface2/20 rounded-lg text-left text-subtext0 font-semibold px-4 py-2 mr-2 block hover:bg-surface2/10 ${!id && 'cursor-not-allowed'}`} onClick={fetchBot}>
                                     {
                                         searchButton?.clicked && 
                                         <svg aria-hidden='true' role='status' className='inline w-4 h-4 mr-3 text-PayneGray animate-spin' viewBox='0 0 100 101' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -226,20 +247,20 @@ export default function AddBot() {
                                     }
                                     Search bot
                                 </button>
-                                <button className={`bg-PaynesGray/20 rounded-lg text-left text-CadetGray font-semibold px-4 py-2 block hover:bg-PaynesGray/10 ${!bot && 'cursor-not-allowed'}`} onClick={onSubmit}>
+                                <button className={`bg-surface2/20 rounded-lg text-left text-subtext0 font-semibold px-4 py-2 block hover:bg-surface2/10 ${!bot && 'cursor-not-allowed'}`} onClick={onSubmit}>
                                     Save
                                 </button>
                             </div>
                             {
                                 searchButton?.error &&
                                 <div className='flex justify-end pt-1'>
-                                    <p className='text-red-Wenge text-sm'>{searchButton.error}</p>
+                                    <p className='text-red/75 text-sm'>{searchButton.error}</p>
                                 </div>
                             }
                             {
                                 saveButton &&
                                 <div className='flex justify-end pt-1'>
-                                     <p className='text-green-CambridgeBlue/80 text-sm'>{saveButton}</p>
+                                     <p className='text-green/75 text-sm'>{saveButton}</p>
                                 </div>
                             }
                         </div>
@@ -256,6 +277,10 @@ type InputLabels = {
     type: string;
     required: boolean;
     id: string;
+    pattern?: {
+        regexp: RegExp
+        message: string
+    }
     minLength?: number
     maxLength?: number
     style?: string

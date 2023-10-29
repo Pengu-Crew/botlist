@@ -8,8 +8,8 @@ export default function Navbar() {
     const { data: session } = useSession()
 
     return (
-        <div className='bg-Charcoal/10 rounded-lg flex justify-between items-center p-5 pt-7 m-5'>
-            <p className='text-xl text-CadetsGray/75 font-extrabold text-center'>Pengu BotList</p>
+        <div className='bg-surface2/10 rounded-lg flex justify-between items-center p-5 pt-7 m-5'>
+            <p className='text-xl text-subtext0 font-extrabold text-center'>Pengu BotList</p>
 
             <Menu as='div' className='relative inline-block'>
                 <Menu.Button className='inline-flex w-full justify-center gap-x-1.5 rounded-lg bg-PayneGray/10 shadow-sm p-3 hover:bg-PayneGray/20'>
@@ -27,12 +27,12 @@ export default function Navbar() {
                     leaveFrom='transform opacity-100 scale-100'
                     leaveTo='transform opacity-0 scale-95'
                 >
-                    <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right rounded-sm bg-OuterSpace/20 ring-1 ring-PaynesGray/20 text-left text-sm font-semibold focus:outline-none'>
+                    <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right rounded-sm bg-surface2/20 ring-1 ring-surface2/20 text-left text-sm font-semibold focus:outline-none'>
                         {
                             session && (
                                 <Menu.Item>
                                     <Link href='/dash/profile'>
-                                        <button className={`text-left px-4 py-2 block w-full hover:bg-OuterSpace/10 hover:rounded-sm text-CadetGray` }>
+                                        <button className={`text-left px-4 py-2 block w-full hover:bg-surface2/10 hover:rounded-sm text-subtext0/75` }>
                                             Profile
                                         </button>
                                     </Link>
@@ -40,7 +40,7 @@ export default function Navbar() {
                             )
                         }
                         <Menu.Item>
-                            <button className={`text-left px-4 py-2 block w-full hover:bg-OuterSpace/10 hover:rounded-sm ${session ? 'text-red-Wenge' : 'text-green-CambridgeBlue'}` }
+                            <button className={`text-left px-4 py-2 block w-full hover:bg-OuterSpace/10 hover:rounded-sm ${session ? 'text-red/75' : 'text-green/75'}` }
                                     onClick={ () => session ? signOut() : signIn('discord') }>
                                 {
                                     session ? 'LogOut' : 'Login'

@@ -1,5 +1,5 @@
-import { Bot } from "@/lib/types";
-import { Schema, model, Model, models } from "mongoose";
+import { Bot } from '@/lib/types';
+import { Schema, model, Model, models } from 'mongoose';
 
 const BotSchema: Schema = new Schema<Bot>({
     id: {
