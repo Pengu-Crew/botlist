@@ -13,7 +13,7 @@
 
 	MONGODB_URI= MONGODB URL
 
-	SECRET= A RANDOM TEXT
+	NEXTAUTH_SECRET= A RANDOM TEXT
 	```
 # Running
 ## Basic NextJs commands

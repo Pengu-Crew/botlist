@@ -1,81 +1,113 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { useSession } from 'next-auth/react'
-import { PENGUIN_EMOJI } from '@/lib/data/emojis'
-import { Bot } from '@/lib/types'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useSession } from 'next-auth/react';
+import { PENGUIN_EMOJI } from '@/lib/data/emojis';
+import { Bot } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function Home() {
-  const [bots, setBots] = useState<Bot[]>()
-  const { data: session } = useSession()
-  
+  const [bots, setBots] = useState<Bot[]>();
+  const { data: session } = useSession();
+
   useEffect(() => {
-    axios.get('/api/dash/db/bots').then(({ data }) => setBots(data.message))
-  }, [])
+    axios.get('/api/dash/db/bots').then(({ data }) => setBots(data.message));
+  }, []);
 
   return (
     <div>
-      <div className='text-center pt-24'>
-        <h1 className='text-subtext0 text-7xl font-extrabold p-5'>Pengu BotList {PENGUIN_EMOJI}</h1>
-        <p className='text-lavender/75 text-xl font-medium'>It&apos;s an Pengudible list of discord bots.</p>
-        { session?.profile && <p className='text-subtext0/90 text-base font-medium pt-5 pb-10'>Welcome {session.profile.global_name ?? session.profile.username}!</p> }
+      <div className='pt-24 text-center'>
+        <h1 className='p-5 text-5xl font-extrabold text-subtext0 lg:text-7xl'>
+          Pengu BotList {PENGUIN_EMOJI}
+        </h1>
+        <p className='text-lg font-medium text-lavender/75 lg:text-xl'>
+          It&apos;s an Pengudible list of discord bots.
+        </p>
+        {session?.profile && (
+          <p className='pb-5 pt-3 text-base font-medium text-subtext0/90 lg:pb-10 lg:pt-5'>
+            Welcome {session.profile.global_name ?? session.profile.username}!
+          </p>
+        )}
         <div className={`flex justify-center px-5 ${!session && 'pt-10'}`}>
-          <input className='appearance-none block w-3/4 bg-surface2/10 border border-surface2/20 rounded-lg py-3 px-6 leading-tight focus:outline-none focus:bg-surface2/30 text-subtext0 placeholder:text-subtext0/80' type='text' placeholder='Search among more than 0 bots' />
+          <input
+            className='block w-10/12 appearance-none rounded-lg border border-surface2/20 bg-surface2/10 px-6 py-3 leading-tight text-subtext0 placeholder:text-subtext0/80 focus:bg-surface2/30 focus:outline-none lg:w-3/4'
+            type='text'
+            placeholder={`Search among more than ${bots?.length} bots`}
+          />
         </div>
       </div>
 
-      <div className='flex justify-center p-20'>
-        <div className='bg-surface2/10 w-2/3 p-5 rounded-lg'>
-          <h3 className='text-subtext0 text-4xl pl-10 font-bold'>Some of the best bots</h3>
+      <div className='flex justify-center px-5 py-10 lg:p-20'>
+        <div className='rounded-lg bg-surface2/10 p-5 lg:w-2/3'>
+          <h3 className='pl-2 text-2xl font-bold text-subtext0 lg:pl-10 lg:text-4xl'>
+            Some of the best bots
+          </h3>
           <div>
-              {
-                bots?.length && bots.map((data) => {
+            {bots?.length &&
+              bots
+                .sort((a, b) => b.votes?.length - a.votes?.length)
+                .map((data) => {
                   return (
-                    <Link href={`/bots/${data.id}`} key={data.id} >
-                      <div className='flex justify-start m-10 p-3 bg-surface1/10 rounded-lg' key={data.username}>
-                        <div className='pl-3 pr-10'>
-                          <Image className='rounded-lg min-w-[75px]' src={data.avatar} alt={data.username} width={75} height={75} />
+                    <Link href={`/bots/${data.id}`} key={data.id}>
+                      <div
+                        className='mt-5 flex justify-start rounded-lg bg-surface1/10 p-1 lg:m-10 lg:p-3'
+                        key={data.username}
+                      >
+                        <div className='flex items-center px-3 lg:pr-10'>
+                          <Image
+                            className='min-w-[75px] rounded-lg'
+                            src={data.avatar}
+                            alt={data.username}
+                            width={75}
+                            height={75}
+                          />
                         </div>
                         <div>
-                          <div className='flex justify-between py-2'>
-                            <div className='flex'>
-                              <p className='text-subtext0/75 text-xl font-bold'>{data.username}</p>
-                              <ArrowDropUpIcon className=' text-PayneGray pl-2' fontSize='large' />
-                              <div className='bg-green/10 px-2 py-1 rounded-lg'>                     
-                                <p className='text-green/75 font-semibold'>0</p>
-                              </div>                     
+                          <div className='flex justify-between lg:py-2'>
+                            <div className='flex items-center'>
+                              <p className='text-base font-bold text-subtext0/75 lg:text-xl'>
+                                {data.username}
+                              </p>
+                              <ArrowDropUpIcon
+                                className='pl-2 text-PayneGray'
+                                fontSize='large'
+                              />
+                              <div className='rounded-lg bg-green/10 px-1 lg:px-2'>
+                                <p className='font-semibold text-green/75'>
+                                  {data.votes.length}
+                                </p>
+                              </div>
                             </div>
-                            {
-                              data.tags?.length && (
-                                <div className='flex items-center'>
-                                  <p className='text-subtext0 text-xl pr-3'>#</p>
-                                  {
-                                    data.tags.map((tag) => {
-                                      return (
-                                        <div className='bg-surface2/10 mr-2 px-2 py-1 rounded-lg' key={tag}>
-                                          <p className='text-subtext0 font-semibold'>{tag}</p>
-                                        </div>
-                                      )
-                                    })
-                                  }
-                                </div>
-                              )
-                            }
-                          </div>                 
-                          <p className='text-lavender/40 font-semibold'>{data.config.shortDescription}</p>
+                            {data.tags?.length && (
+                              <div className='flex items-center'>
+                                <p className='pr-3 text-xl text-subtext0'>#</p>
+                                {data.tags.map((tag) => {
+                                  return (
+                                    <div
+                                      className='mr-2 rounded-lg bg-surface2/10 px-2 py-1'
+                                      key={tag}
+                                    >
+                                      <p className='font-semibold text-subtext0'>
+                                        {tag}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                          <p className='text-xs leading-3 text-lavender/40 lg:text-base/6 lg:font-semibold lg:leading-normal'>
+                            {data.config.shortDescription}
+                          </p>
                         </div>
                       </div>
                     </Link>
-
-                  )
-                })
-              }
+                  );
+                })}
           </div>
         </div>
       </div>
-
     </div>
-  )
+  );
 }
