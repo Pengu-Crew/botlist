@@ -74,9 +74,18 @@ export default function Profile() {
                           />
                         </div>
                         <div className='py-2'>
-                          <p className='text-xl font-bold text-subtext0'>
-                            {data.username}
-                          </p>
+                          <div className='flex'>
+                            <p className='pr-3 text-xl font-bold text-subtext0'>
+                              {data.username}
+                            </p>
+                            {!data.accepted && (
+                              <div className='mr-2 rounded-lg bg-blue/10 px-2 py-1'>
+                                <p className='font-semibold text-subtext0/75'>
+                                  Pending
+                                </p>
+                              </div>
+                            )}
+                          </div>
                           <p className='pr-5 font-semibold text-lavender/40'>
                             {data.config.shortDescription}
                           </p>

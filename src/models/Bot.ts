@@ -60,6 +60,11 @@ const BotSchema: Schema = new Schema<Bot>({
     required: false,
     default: [],
   },
+  accepted: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 const BotModel = models['bot'] || model('bot', BotSchema);

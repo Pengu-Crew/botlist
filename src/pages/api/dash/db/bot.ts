@@ -38,6 +38,8 @@ export default async function BotDiscord(
       discriminator: data.discriminator,
       avatar: data.avatar,
     });
+    if (data.accent_color)
+      data.hexAccentColor = `#${data.accent_color.toString(16)}`;
 
     const botJson = bot.toJSON() as BotAndOwner;
     botJson.owner = data;

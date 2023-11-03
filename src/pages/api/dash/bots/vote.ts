@@ -11,35 +11,37 @@ export default async function Vote(req: NextApiRequest, res: NextApiResponse) {
       message: 'You must be logged in to use this endpoint.',
     });
 
-  const { id, userID } = req.query;
-  if (!id || !userID)
+  const { id } = req.query;
+  if (!id)
     return res.status(401).send({
       message: 'You have to provide an id',
     });
 
   if (!DISCORD_ID_REGEX.test(id as string))
     return res.status(401).send({
-      message: 'You must provide a valid id',
+      message: 'You must provide a valid id.',
     });
 
   const dataDB = await BotModel.findOne({ id });
   if (!dataDB)
     return res.status(404).send({
-      message: 'The bot is not in the botlist',
+      message: 'The bot is not in the botlist.',
     });
 
-  const userVote = dataDB?.votes?.find((v) => v.userID === userID);
+  if (!dataDB.accepted)
+    return res.status(200).send({
+      message: 'You cannot vote for a bot that has not been accepted.',
+    });
+
+  const userVote = dataDB?.votes?.find((v) => v.userID === session.profile.id);
   if (userVote) {
-    if (getDiferency(userVote.timestamp, 24)) {
+    if (getDiferency(userVote.timestamp, 24))
       await BotModel.updateOne(
         { id },
-        { $set: { 'votes.$[userVote].timestamp': new Date().getDate() } },
-        { arrayFilters: [{ 'votes.userID': userID }] }
+        { $set: { 'votes.$[vote].timestamp': new Date().getTime() } },
+        { arrayFilters: [{ 'vote.userID': session.profile.id }] }
       );
-      return res.status(200).send({
-        message: `You voted correctly!`,
-      });
-    } else
+    else
       return res.status(200).send({
         message: `You have already voted for this bot, wait ${
           24 -
@@ -48,13 +50,20 @@ export default async function Vote(req: NextApiRequest, res: NextApiResponse) {
           )
         }h to vote again.`,
       });
-  } else {
+  } else
     await BotModel.updateOne(
       { id },
-      { $push: { votes: { userID, timestamp: new Date().getTime() } } }
+      {
+        $push: {
+          votes: {
+            userID: session.profile.id,
+            timestamp: new Date().getTime(),
+          },
+        },
+      }
     );
-    return res.status(200).send({
-      message: 'You voted correctly!',
-    });
-  }
+
+  return res.status(200).send({
+    message: 'You voted correctly!',
+  });
 }

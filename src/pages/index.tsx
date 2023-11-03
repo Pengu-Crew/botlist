@@ -22,10 +22,14 @@ export default function Home() {
           Pengu BotList {PENGUIN_EMOJI}
         </h1>
         <p className='text-lg font-medium text-lavender/75 lg:text-xl'>
-          It&apos;s an Pengudible list of discord bots.
+          It&apos;s an{' '}
+          <a className='text-transparent bg-gradient-to-r from-peach to-teal bg-clip-text'>
+            Pengudible
+          </a>{' '}
+          list of discord bots.
         </p>
         {session?.profile && (
-          <p className='pb-5 pt-3 text-base font-medium text-subtext0/90 lg:pb-10 lg:pt-5'>
+          <p className='pb-5 pt-3 text-base font-medium text-subtext0/80 lg:pb-10 lg:pt-5'>
             Welcome {session.profile.global_name ?? session.profile.username}!
           </p>
         )}
@@ -46,6 +50,7 @@ export default function Home() {
           <div>
             {bots?.length &&
               bots
+                .filter((d) => d.accepted)
                 .sort((a, b) => b.votes?.length - a.votes?.length)
                 .map((data) => {
                   return (

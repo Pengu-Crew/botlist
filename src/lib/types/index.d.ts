@@ -38,4 +38,5 @@ export interface Bot {
     userID: string;
     timestamp: number;
   }[];
+  accepted?: boolean;
 }

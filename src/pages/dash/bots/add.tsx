@@ -178,6 +178,7 @@ export default function AddBot() {
         },
       },
       votes: [],
+      accepted: false,
     };
 
     axios

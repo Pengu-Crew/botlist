@@ -9,6 +9,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
+import { hexToRgba } from '@/lib/utils/utils';
 
 export default function Bot() {
   const router = useRouter();
@@ -20,21 +21,23 @@ export default function Bot() {
 
   function links(icon: string, name: string, link?: string) {
     return (
-      <div className='flex items-center pl-2 pt-3'>
+      <div className='flex items-center pt-3 lg:pl-2'>
         {linkButton(icon)}
-        <p className='pl-2 pr-3 font-semibold text-subtext0/80'>{name}:</p>
+        <p className='px-1 text-sm font-semibold text-subtext0/80 lg:pl-2 lg:pr-3 lg:text-base/6'>
+          {name}:
+        </p>
         {link ? (
           <Link
             href={link}
             passHref={true}
-            className='text-subtext0/75'
+            className='text-sm text-subtext0/75 lg:text-base/6'
             rel='noopener noreferrer'
             target='_blank'
           >
             {link}
           </Link>
         ) : (
-          <p>Unknow link</p>
+          <p>Unknown link</p>
         )}
       </div>
     );
@@ -69,12 +72,10 @@ export default function Bot() {
 
   function onVote() {
     if (session?.profile)
-      axios
-        .get(`/api/dash/bots/vote?id=${bot?.id}&userID=${session?.profile.id}`)
-        .then(({ data }) => {
-          setVoteMessage(data.message);
-          setTimeout(() => setIsOpenVote(true), 1000);
-        });
+      axios.get(`/api/dash/bots/vote?id=${bot?.id}`).then(({ data }) => {
+        setVoteMessage(data.message);
+        setTimeout(() => setIsOpenVote(true), 1000);
+      });
     else {
       setVoteMessage('You must be logged in to vote for this bot.');
       setTimeout(() => setIsOpenVote(true), 1000);
@@ -148,35 +149,35 @@ export default function Bot() {
           <h1 className='p-5 text-5xl font-extrabold text-subtext0'>
             {bot.username} {PENGUIN_EMOJI}
           </h1>
-          <div className='m-10 mt-3 flex justify-between rounded-lg bg-surface2/10 p-5'>
+          <div className='my-5 justify-between rounded-lg bg-surface2/10 p-5 lg:m-10 lg:flex'>
             <div className='flex items-center'>
               <Image
-                className='ml-5 rounded-lg'
+                className='rounded-lg lg:ml-5'
                 src={bot.avatar}
                 alt={bot.username}
                 width={75}
                 height={75}
               />
-              <div className='py-5 pl-5 text-center'>
-                <p className='text-3xl font-bold text-subtext0'>
+              <div className='ml-3 py-5 text-center lg:pl-5'>
+                <p className='text-xl font-bold text-subtext0 lg:text-3xl'>
                   {bot.username}
                 </p>
-                <p className='text-base font-semibold text-subtext0/75'>
+                <p className='text-xs font-semibold text-subtext0/75 lg:text-base/6'>
                   ({bot.id})
                 </p>
               </div>
-              <div className='ml-5 rounded-lg bg-subtext0/10 p-2'>
+              <div className='ml-3 rounded-lg bg-subtext0/10 p-2 lg:ml-5'>
                 <p className='text-base font-semibold text-subtext0'>Bot</p>
               </div>
             </div>
-            <div className='m-5 flex max-w-2xl items-center rounded-l bg-Charcoal/10 '>
-              <p className='px-2 text-center font-semibold text-lavender/40'>
+            <div className='m-2 mt-3 flex max-w-2xl items-center rounded-lg bg-surface2/10 lg:m-5 '>
+              <p className='p-2 text-sm font-semibold text-lavender/40 lg:text-center lg:text-base/6'>
                 {bot.config.shortDescription}
               </p>
             </div>
-            <div className='flex items-center'>
+            <div className='flex justify-evenly pt-3 lg:items-center lg:pt-0'>
               <button
-                className='mr-3 block rounded-lg bg-green/10 px-4 py-2 font-semibold text-green/75 hover:bg-green/20'
+                className='block rounded-lg bg-green/10 px-4 py-2 font-semibold text-green/75 hover:bg-green/20 lg:mr-3'
                 onClick={onVote}
               >
                 Vote
@@ -186,24 +187,24 @@ export default function Bot() {
                 rel='noopener noreferrer'
                 target='_blank'
               >
-                <button className='mr-5 block rounded-lg bg-surface2/10 px-4 py-2 font-semibold text-subtext0/75 hover:bg-subtext0/20'>
+                <button className='block rounded-lg bg-surface2/10 px-4 py-2 font-semibold text-subtext0/75 hover:bg-subtext0/20 lg:mr-5'>
                   Invite
                 </button>
               </Link>
             </div>
           </div>
-          <div className='m-10 mt-3 rounded-lg bg-surface2/10 p-5'>
-            <p className='px-2 font-semibold text-lavender/40'>
+          <div className='my-3 mt-5 rounded-lg bg-surface2/10 p-5 lg:m-10'>
+            <p className='px-2 text-sm font-semibold text-lavender/40 lg:text-base/6'>
               {bot.config.longDescription}
             </p>
           </div>
-          <p className='pl-10 text-3xl font-bold text-subtext0'>
+          <p className='my-5 pl-1 text-3xl font-bold text-subtext0 lg:pl-10'>
             More Information {PENGUIN_EMOJI}
           </p>
-          <div className='m-5 mt-3 flex justify-between rounded-lg bg-surface2/10 p-5'>
+          <div className='mt-3 justify-between rounded-lg bg-surface2/10 p-5 lg:m-5 lg:flex'>
             <div>
               <div className='flex items-center py-3 pb-6'>
-                <p className='pl-5 pr-2 text-lg font-semibold text-subtext0'>
+                <p className='pr-2 text-lg font-semibold text-subtext0 lg:pl-5'>
                   Prefix:
                 </p>
                 <div className='rounded-lg bg-surface2/10 px-2 py-1'>
@@ -213,10 +214,15 @@ export default function Bot() {
                 </div>
               </div>
               <div>
-                <p className='pb-3 pl-5 text-xl font-bold text-subtext0'>
+                <p className='pb-3 text-xl font-bold text-subtext0 lg:pl-5'>
                   Owner
                 </p>
-                <div className='ml-10 flex items-center rounded-lg bg-surface2/10 p-3'>
+                <div
+                  className='flex items-center rounded-lg bg-surface2/10 p-3 lg:ml-10'
+                  style={{
+                    backgroundColor: hexToRgba(bot.owner.hexAccentColor, 0.1),
+                  }}
+                >
                   <Image
                     className='rounded-lg'
                     src={bot.owner.avatar}
@@ -236,12 +242,12 @@ export default function Bot() {
             {(bot.config.links.linkDiscordServer ||
               bot.config.links.linkGithub ||
               bot.config.links.linkWebSite) && (
-              <div className='m-5'>
-                <p className='pb-2 text-3xl font-bold text-subtext0'>Links</p>
+              <div className='mt-6 lg:m-5'>
+                <p className='pb-2 text-xl font-bold text-subtext0'>Links</p>
                 {bot.config.links.linkDiscordServer &&
                   links(
                     'discord',
-                    'Discord Server',
+                    'Discord',
                     bot.config.links.linkDiscordServer
                   )}
                 {bot.config.links.linkGithub &&
